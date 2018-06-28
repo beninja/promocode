@@ -8,7 +8,7 @@ module.exports = function(app) {
 
   var Promocode = require('./models/promocode.model');
 
-  mongoose.connect("mongodb://localhost:27017/promocode");
+  mongoose.connect("mongodb://<promocodeuser>:<promopassword2018>@ds147974.mlab.com:47974/heroku_hk4g3gzd");
   app.set('superSecret', process.env.secret);
 
   app.use(bodyParser.urlencoded({ extended: false }));
