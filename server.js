@@ -1,14 +1,16 @@
-var express = require('express');
-var app = express();
-var morgan = require('morgan');
+const express = require('express');
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const morgan = require('morgan');
 
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(morgan('combined'));
 
-require('./routes')(app);
+require('./routes')(app, io);
 
-var server = app.listen(port);
-console.log('Promocode API is up at http://localhost/' + port + '/api/');
+const server = http.listen(port);
+console.log('Promocode API is up at http://localhost/' + port);
 
 module.exports = server;

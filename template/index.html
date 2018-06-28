@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      .stats { padding: 20px; width: 100%; text-align: center; display: flex; justify-content: space-between; flex-direction: row;}
+      .stats div { font-size: 16px; font-weight: bold;}
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="stats">
+      <div><span class="promonumber"></span> promocode requested</div>
+      <div><span class="validnumber"></span> promocode accepted</div>
+      <div><span class="deniednumber"></span> promocode denied</div>
+      <div><span class="invalidnumber"></span> promocode invalid</div>
+    </div>
+    <ul id="messages">
+    </ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        let promonumber = 0, validnumber = 0, deniednumber = 0, invalidnumber = 0;
+        $('.promonumber').text(promonumber);
+        $('.validnumber').text(validnumber);
+        $('.deniednumber').text(deniednumber);
+        $('.invalidnumber').text(invalidnumber);
+        socket.on('promocode_validated', function(promoname, status){
+          promonumber ++;
+          $('.promonumber').text(promonumber);
+          $('#messages').prepend($('<li>').text("promocode requested is: [" + promoname + "] and status is : [" + status + "]"));
+          if (status === "denied") {
+            deniednumber ++;
+            $('.deniednumber').text(deniednumber);
+          }
+          if (status === "accepted") {
+            validnumber ++;
+            $('.validnumber').text(validnumber);
+          }
+          if (status === "invalid") {
+            invalidnumber ++;
+            $('.invalidnumber').text(invalidnumber);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

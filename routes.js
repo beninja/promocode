@@ -1,4 +1,4 @@
-module.exports = function(app) {
+module.exports = function(app, io) {
   const express = require('express');
   const mongoose = require('mongoose');
   const bodyParser = require('body-parser');
@@ -11,10 +11,21 @@ module.exports = function(app) {
   mongoose.connect("mongodb://promocodeuser:promopassword2018@ds147974.mlab.com:47974/heroku_hk4g3gzd");
   app.set('superSecret', process.env.secret);
 
+  var apiRoutes = express.Router();
+
+  apiRoutes.get('/admin', (req, res) => {
+    res.sendFile(__dirname + '/template/index.html');
+  });
+
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  var apiRoutes = express.Router();
+  io.on('connection', (socket) => {
+  console.log('admin connected');
+  socket.on('disconnect', () => {
+    console.log('admin disconnected');
+  });
+});
 
   //Middleware CORS
   apiRoutes.use(function(req,res,next){
@@ -38,9 +49,14 @@ module.exports = function(app) {
     res.json('welcome to Promocode API');
   });
 
+
   //Phase routes
-  apiRoutes.post('/promocodes', promocodeController.createPromocode);
-  apiRoutes.post('/promocodes/validations', promocodeController.validatePromocode);
+  apiRoutes.post('/promocodes', (req, res) => {
+    promocodeController.createPromocode(req, res, io);
+  });
+  apiRoutes.post('/promocodes/validations', (req, res) => {
+    promocodeController.validatePromocode(req, res, io);
+  });
 
   apiRoutes.use(function(req,res,next){
 

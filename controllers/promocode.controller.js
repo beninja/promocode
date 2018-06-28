@@ -17,7 +17,7 @@ function getWeatherData() {
     });
   });
 }
-function validatePromocode(req, res) {
+function validatePromocode(req, res, io) {
   Promocode.findOne({ name: req.body.promocode_name })
     .then((promocode) => {
       if (promocode) {
@@ -46,6 +46,7 @@ function validatePromocode(req, res) {
           //   });
           // }
           if (meteoRestriction && dateRestriction) {
+            io.emit('promocode_validated', req.body.promocode_name, 'accepted', { for: 'everyone' });
             return res.json({
               promocode_name: promocode.name,
               status: 'accepted',
@@ -59,6 +60,7 @@ function validatePromocode(req, res) {
             if (!dateRestriction) {
               reasons.date = 'Outdated';
             }
+            io.emit('promocode_validated', req.body.promocode_name, 'denied', { for: 'everyone' });
             return res.json({
               promocode_name: promocode.name,
               status: 'denied',
@@ -71,13 +73,14 @@ function validatePromocode(req, res) {
           return res.json({ message: "Le service n'est pas disponible" });
         });
       } else {
+        io.emit('promocode_validated', req.body.promocode_name, 'invalid', { for: 'everyone' });
         res.status(404);
         return res.json({ message: 'Le promocode est invalide' });
       }
     });
 }
 
-function createPromocode(req, res) {
+function createPromocode(req, res, io) {
   console.log(req.body);
   const newPromocode = new Promocode({
     name: req.body.name,

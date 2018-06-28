@@ -17,7 +17,8 @@
     "moment": "^2.22.2",
     "mongoose": "^5.1.7",
     "morgan": "^1.9.0",
-    "openweather-apis": "^3.3.5"
+    "openweather-apis": "^3.3.5",
+    "socket.io": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^1.17.5"
