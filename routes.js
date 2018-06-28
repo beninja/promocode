@@ -6,12 +6,12 @@ module.exports = function(app, io) {
 
   const promocodeController = require('./controllers/promocode.controller');
 
-  var Promocode = require('./models/promocode.model');
+  const Promocode = require('./models/promocode.model');
 
   mongoose.connect("mongodb://promocodeuser:promopassword2018@ds147974.mlab.com:47974/heroku_hk4g3gzd");
   app.set('superSecret', process.env.secret);
 
-  var apiRoutes = express.Router();
+  const apiRoutes = express.Router();
 
   apiRoutes.get('/admin', (req, res) => {
     res.sendFile(__dirname + '/template/index.html');
@@ -45,7 +45,7 @@ module.exports = function(app, io) {
   });
 
   //unauthenticate routes
-  apiRoutes.get('/', function(req, res) {
+  apiRoutes.get('/', (req, res) => {
     res.json('welcome to Promocode API');
   });
 
@@ -58,7 +58,7 @@ module.exports = function(app, io) {
     promocodeController.validatePromocode(req, res, io);
   });
 
-  apiRoutes.use(function(req,res,next){
+  apiRoutes.use((req,res,next) => {
 
     var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'];
 
@@ -66,7 +66,7 @@ module.exports = function(app, io) {
       token = token.replace('Bearer ', '');
     }
     if (token) {
-      jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+      jwt.verify(token, app.get('superSecret'), (err, decoded) => {
         if (err) {
           return res.json({ success: false, message: 'Failed to authenticate token.'})
         } else {
