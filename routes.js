@@ -8,8 +8,8 @@ module.exports = function(app, io) {
 
   const Promocode = require('./models/promocode.model');
 
-  mongoose.connect("mongodb://promocodeuser:promopassword2018@ds147974.mlab.com:47974/heroku_hk4g3gzd");
-  app.set('superSecret', process.env.secret);
+  mongoose.connect(process.env.DATABASE);
+  app.set('superSecret', process.env.SECRET);
 
   const apiRoutes = express.Router();
 

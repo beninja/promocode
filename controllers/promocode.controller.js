@@ -3,7 +3,7 @@ const weather = require('openweather-apis');
 const moment = require('moment');
 
 weather.setLang('en');
-weather.setAPPID('d0562f476913da692a065c608d0539f6');
+weather.setAPPID(process.env.OPENWEATHER_API_KEY);
 
 function getWeatherData() {
   return new Promise((resolve, reject) => {
