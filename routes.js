@@ -69,8 +69,5 @@ module.exports = function(app) {
 
   //authenticate routes
 
-  //User routes
-  // apiRoutes.get('/users', userController.getAllUser);
-
   app.use('/', apiRoutes);
 }
